@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  mysql-server:
+    image: mysql:5.7.16
+    restart: always
+    env_file:
+      ./credentials.env
+    ports:
+      - 3306:3306
+    command: --init-file /init-db.sql
+    volumes:
+      - ./database/init-db.sql:/init-db.sql     # map the init-db.sql file into Docker
+      - ./database/persistent_db:/var/lib/mysql # persist even when container is stopped!
+    container_name: 140B-SQL-Container
+
+  web-server:
+    build:
+      context: ./server
+    ports:
+      - 80:80
+    # command: python server.py # automatically start the server when the container starts
+    command: tail -f /dev/null # just keep it running for manual web serving
+    env_file:
+      ./credentials.env
+    volumes:
+      - ./server/src:/app
+    container_name: 140B-web-server
+    depends_on:
+      - mysql-server
+
+volumes:
+  persistent_db:
