@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ECE 140A Rest DB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="simple.css">
+  </head>
+  <body>
+
+    <h1>Our All-Star Cast</h1>
+
+    <table class="stylish-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Age</th>
+        </tr>
+      </thead>
+      <tbody>
+        {# loop through the records and render them #}
+        {% for actor in actors %}
+          <tr>
+            <td>{{ actor[0] }}</td>
+            <td>{{ actor[1] }}</td>
+            <td>{{ actor[2] }}</td>
+            <td><a href="/actor/{{ actor[0] }}">{{ actor[3] }}</a></td>
+            <td>{{ actor[4] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
+
+
