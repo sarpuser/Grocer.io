@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Grocer.io</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/simple.css">
+	</head>
+	<body>
+		<h1 class="h1">Grocer.io</h1>
+		<h2>{{fname}}'s Cart</h2>
+		<button onclick="log_out()">Log Out</button> <br>
+		<table>
+			<tr>
+				<th>Barcode</th>
+				<th>Item Name</th>
+				<th>Quantity</th>
+			</tr>
+			{% for item in cart_items %}
+			<tr>
+				<td>{{item[0]}}</td>
+				<td>{{item[1]}}</td>
+				<td>{{item[2]}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<script type="text/javascript" src="/rest.js"></script>
+	</body>
+</html>

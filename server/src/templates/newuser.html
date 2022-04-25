@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Grocer.io</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/simple.css">
+	</head>
+	<body>
+		<h1 class="h1">Grocer.io</h1>
+		<form>
+			<label for="fname">First Name </label>
+			<input type="text" id="fname"> <br>
+			<label for="lname">Last Name </label>
+			<input type="text" id="lname"> <br>
+			<label for="email">Email </label>
+			<input type="text" id="email"> <br>
+			<label for="address">Address </label>
+			<input type="text" id="address"> <br>
+			<label for="city">City </label>
+			<input type="text" id="city"> <br>
+			<label for="state">State </label>
+			<select name="state" id="state">
+				<option value="CA">CA</option>
+				<option value="NY">NY</option>
+				<option value="TX">TX</option>
+				<option value="NJ">NJ</option>
+				<option value="IL">IL</option>
+			</select> <br>
+			<label for="zipcode">Zip Code </label>
+			<input type="text" id="zipcode"> <br>
+			<label for="order_day">Order Day</label>
+			<select name="order_day" id="order_day">
+				<option value="0">Monday</option>
+				<option value="1">Tuesday</option>
+				<option value="2">Wednesday</option>
+				<option value="3">Thursday</option>
+				<option value="4">Friday</option>
+				<option value="5">Saturday</option>
+				<option value="6">Sunday</option>
+			</select> <br>
+			<label for="order_method">Order Method </label>
+			<select name="order_method" id="order_method">
+				<option value="1">Delivery</option>
+				<option value="2">Pickup</option>
+			</select> <br>
+			<button onclick="create_account()">Create Account</button>
+		</form>
+		<script type="text/javascript" src="/rest.js"></script>
+	</body>
+</html>

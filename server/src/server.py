@@ -1,6 +1,10 @@
+from turtle import st
+from urllib import response
 from wsgiref.simple_server import make_server
+from numpy import record
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
+from pyramid.response import FileResponse
 
 import mysql.connector as mysql
 import os
@@ -14,91 +18,197 @@ db_name = os.environ['MYSQL_DATABASE']
 
 ''' Normal Route for an HTML Page '''
 def get_home(req):
-  db = mysql.connect(host=db_host, database=db_name, user=db_user, passwd=db_pass)
-  cursor = db.cursor()
-  cursor.execute("select id, first_name, last_name, email, age from Actors;")
-  records = cursor.fetchall()
-  db.close()
+	return FileResponse('./templates/index.html')
 
-  return render_to_response('index.html', {"actors":records}, request=req)
+def new_user_page(req):
+	return FileResponse('./templates/newuser.html')
 
+def create_user(req):
+	# Get user information
+	first_name = req.matchdict['fname']
+	last_name = req.matchdict['name']
+	email = req.matchdict['email']
+	address = req.matchdict['address']
+	city = req.matchdict['city']
+	state = req.matchdict['state']
+	zipcode = req.matchdict['zip']
+	order_day = int(req.matchdict['day'])
+	order_method = int(req.matchdict['method'])
 
-''' Collection Route to GET Actors '''
-def get_actors(req):
-  # Connect to the database and retrieve the actors
-  db = mysql.connect(host=db_host, database=db_name, user=db_user, passwd=db_pass)
-  cursor = db.cursor()
-  cursor.execute("select id, first_name, last_name, email, age from Actors;")
-  records = cursor.fetchall()
-  db.close()
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
 
-  # Format the result as key-value pairs
-  response = {}
-  for index, row in enumerate(records):
-    response[index] = {
-      "id": row[0],
-      "first_name": row[1],
-      "last_name": row[2],
-      "email": row[3],
-      "age": row[4]
-    }
+	# Create user entry
+	query = "INSERT INTO user_data (first_name, last_name, email, address, city, state, zipcode, order_day, order_method) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+	values = (first_name, last_name, email, address, city, state, zipcode, order_day, order_method)
+	cursor.execute(query, values)
+	db.commit()
 
-  return response
+	# Get user id to create cart table
+	query = "SELECT user_id FROM user_data WHERE email = %s"
+	cursor.execute(query, email)
+	user_id = cursor.fetchone()[0]
 
+	# Create cart table name and add to user entry
+	cart_table_name = "user_" + user_id + "_cart"
+	query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
+	cursor.execute(query, (cart_table_name, user_id))
+	db.commit()
 
-''' Instance Route to GET Actor '''
-def get_actor(req):
-  # Retrieve the route argument (this is not GET/POST data!)
-  the_id = req.matchdict['actor_id']
+	# Create the user's cart. All user carts will be called user_{user_id}_cart
+	query = """
+		CREATE TABLE IF NOT EXISTS %s (
+			barcode INT PRIMARY KEY,
+			item_name VARCHAR(100),
+			quantity INT,
+			updated TIMESTAMP
+		)
+	"""
+	cursor.execute(query, cart_table_name)
+	db.commit()
+	db.close()
 
-  # Connect to the database and retrieve the actor
-  db = mysql.connect(host=db_host, database=db_name, user=db_user, passwd=db_pass)
-  cursor = db.cursor()
-  cursor.execute("select * from Actors where id='%s';" % the_id)
-  record = cursor.fetchone()
-  db.close()
+	
 
-  if record is None:
-    return ""
+	return {'create_user_success': 1, 'email': email}
 
-  # Format the result as key-value pairs
-  response = {
-    'id':         record[0],
-    'first_name': record[1],
-    'last_name':  record[2],
-    'email':      record[3],
-    'age':        record[4],
-    'datetime':   record[5].isoformat()
-  }
+def user_home_page(req):
+	email = req.matchdict['email']
 
-  return response
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
 
+	query = "SELECT first_name, last_name, email, address, city, state, zipcode, order_day, order_method FROM user_data WHERE email=%s"
+	cursor.execute(query, email)
+	record = cursor.fetchone()
+
+	if (record[8] == 1):
+		order_method = "Delivery"
+	elif (record[8] == 2):
+		order_method = "Pickup"
+
+	if (record[7] == 0):
+		order_day = "Monday"
+	elif (record[7] == 1):
+		order_day = "Tuesday"
+	elif (record[7] == 2):
+		order_day = "Wednesday"
+	elif (record[7] == 3):
+		order_day = "Thursday"
+	elif (record[7] == 4):
+		order_day = "Friday"
+	elif (record[7] == 5):
+		order_day = "Saturday"
+	elif (record[7] == 6):
+		order_day = "Sunday"
+
+	# Create JSON for passing to the jinja templatin engine
+	user_data = {
+		'fname': record[0],
+		'lname': record[1],
+		'email': record[2],
+		'address': record[3],
+		'city': record[4],
+		'state': record[5],
+		'zipcode': record[6],
+		'order_day': record[7],
+		'order_method': record[8],
+	}
+
+	return render_to_response('./templates/user_home.html', user_data, request=req)
+
+def get_cart(req):
+	email = req.matchdict['email']
+
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
+
+	# Get user id to get cart table
+	query = "SELECT user_id, first_name FROM user_data WHERE email = %s"
+	cursor.execute(query, email)
+	user_info = cursor.fetchone()[0]
+	user_id = user_info[0]
+	first_name = user_info[1]
+
+	cart_table_name = "user_" + user_id + "_cart"
+
+	query = "SELECT barcode, item_name, quantity FROM %s"
+	cursor.execute(query, cart_table_name)
+	cart_items = cursor.fetchall()
+	response = {'cart_items': cart_items, 'fname': first_name}
+
+	return render_to_response('./templates/cart.html', response, request=req)
+
+def add_to_cart(req):
+	barcode = req.matchdict['barcode']
+	email = req.matchdict['email']
+	item_name = "fake" # FIXME: add barcode lookup API
+
+	# Connect to the DB
+	db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
+	cursor = db.cursor()
+
+	# Get user id to get cart table
+	query = "SELECT user_id FROM user_data WHERE email = %s"
+	cursor.execute(query, email)
+	user_id = cursor.fetchone()[0]
+	cart_table_name = "user_" + user_id + "_cart"
+
+	query = "SELECT quantity FROM %s"
+	if (cursor.execute(query, cart_table_name) > 0):
+		quantity  = cursor.fetchone()[0] + 1
+		query = "UPDATE %s SET quantity=%d WHERE barcode=%s"
+		values = (cart_table_name, quantity, barcode)
+		cursor.execute(query, values)
+
+	else:
+		query = "INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 0)"
+		values  = (cart_table_name, barcode, item_name)
+		cursor.execute(query, values)
+	db.commit()
+
+	return {'added_to_cart': 1}
 
 ''' Route Configurations '''
 if __name__ == '__main__':
-  with Configurator() as config:
+	with Configurator() as config:
 
-    # to use Jinja2 to render the template!
-    config.include('pyramid_jinja2')
-    config.add_jinja2_renderer('.html')
+		# to use Jinja2 to render the template!
+		config.include('pyramid_jinja2')
+		config.add_jinja2_renderer('.html')
 
-    # Home route
-    config.add_route('get_home', '/')
-    config.add_view(get_home, route_name='get_home')
+		# Home route
+		config.add_route('get_home', '/')
+		config.add_view(get_home, route_name='get_home')
 
-    # RESTful collection route
-    config.add_route('get_actors', '/actors')
-    config.add_view(get_actors, route_name='get_actors', renderer='json')
+		# add new user data route
+		config.add_route('create_user', '/adduser/{fname}/{lname}/{email}/{address}/{city}/{state}/{zip}/{day}/{method}')
+		config.add_view(create_user, route_name='create_user', renderer='json')
 
-    # RESTful instance route
-    config.add_route('get_actor', '/actor/{actor_id}')
-    config.add_view(get_actor, route_name='get_actor', renderer='json')
+		# User home route
+		config.add_route('get_user', '/user/{email}')
+		config.add_view(user_home_page, route_name='get_user')
 
-    # For our static assets!
-    config.add_static_view(name='/', path='./public', cache_max_age=3600)
+		# New user form route
+		config.add_route('new_user', '/newuser')
+		config.add_view(new_user_page, route_name='new_user')
 
-    app = config.make_wsgi_app()
+		# User cart route
+		config.add_route('get_cart', '/cart/{email}')
+		config.add_view(get_cart, route_name='get_cart')
 
-  server = make_server('0.0.0.0', 80, app)
-  print('Web server started on: http://0.0.0.0 or http://127.0.0.1 or http://localhost')
-  server.serve_forever()
+		# Add to cart route
+		config.add_route('add_to_cart', '/additem/{email}/{barcode}')
+		config.add_view(add_to_cart, route_name='add_to_cart')
+
+		# For our static assets!
+		config.add_static_view(name='/', path='./public', cache_max_age=3600)
+
+		app = config.make_wsgi_app()
+
+	server = make_server('0.0.0.0', 80, app)
+	print('Web server started on: http://0.0.0.0 or http://127.0.0.1 or http://localhost')
+	server.serve_forever()
