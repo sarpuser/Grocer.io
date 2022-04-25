@@ -12,7 +12,7 @@ db = mysql.connect(user=db_user, password=db_pass, host=db_host)
 cursor = db.cursor()
  
 # Create License_Plates database if it doesn't exist
-cursor.execute("CREATE DATABASE IF NOT EXISTS Grocer.io")
+cursor.execute("CREATE DATABASE IF NOT EXISTS GrocerIO")
 
 # Connect to the License_Plates DB
 db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
