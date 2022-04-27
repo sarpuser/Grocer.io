@@ -9,9 +9,8 @@ services:
       ./credentials.env
     ports:
       - 3306:3306
-    command: --init-file /init-db.sql
+    # command: --init-file /init-db.sql
     volumes:
-      - ./database/init-db.sql:/init-db.sql     # map the init-db.sql file into Docker
       - ./database/persistent_db:/var/lib/mysql # persist even when container is stopped!
     container_name: 140B-SQL-Container
 

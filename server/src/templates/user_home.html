@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Grocer.io</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/simple.css">
+	</head>
+	<body>
+		<h1 class="h1">Grocer.io</h1>
+		<table>
+			<tr>
+				<td><strong>First Name</strong></td>
+				<td id="fname">{{fname}}</td>
+			</tr>
+			<tr>
+				<td><strong>Last Name</strong></td>
+				<td id="lname">{{lname}}</td>
+			</tr>
+			<tr>
+				<td><strong>Email</strong></td>
+				<td id="email">{{email}}</td>
+			</tr>
+			<tr>
+				<td><strong>Address</strong></td>
+				<td id="address">{{address}}</td>
+			</tr>
+			<tr>
+				<td><strong>City</strong></td>
+				<td id="city">{{city}}</td>
+			</tr>
+			<tr>
+				<td><strong>State</strong></td>
+				<td id="state">{{state}}</td>
+			</tr>
+			<tr>
+				<td><strong>Zip Code</strong></td>
+				<td id="zipcode">{{zipcode}}</td>
+			</tr>
+			<tr>
+				<td><strong>Order Day</strong></td>
+				<td id="order_day">{{order_day}}</td>
+			</tr>
+			<tr>
+				<td><strong>Order Method</strong></td>
+				<td id="order_method">{{order_method}}</td>
+			</tr>
+		</table>
+		<button onclick="view_cart()">View Cart</button>
+		<button onclick="log_out()">Log Out</button>
+		<script type="text/javascript" src="/rest.js"></script>
+	</body>
+</html>
