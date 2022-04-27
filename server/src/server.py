@@ -172,6 +172,25 @@ def add_to_cart(req):
 
 	return {'added_to_cart': 1}
 
+def request_user_id(req):
+	IP = req.remote_addr
+
+	# Connect to the DB
+	db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
+	cursor = db.cursor()
+
+	# return the user_id that matches the IP from the rpi
+	query = "SELECT user_id FROM pairing_requests WHERE IP = %s"
+	cursor.execute(query, IP)
+	user_id = cursor.fetchone()[0]
+
+	#now delete the the IP from pairing_requests now that we have paired
+	query = "DELETE user_id, IP FROM pairing_requests WHERE IP = %s"
+	cursor.execute(query, IP)
+
+	return {"user_id" : user_id}
+
+
 ''' Route Configurations '''
 if __name__ == '__main__':
 	with Configurator() as config:
@@ -203,6 +222,10 @@ if __name__ == '__main__':
 		# Add to cart route
 		config.add_route('add_to_cart', '/additem/{email}/{barcode}')
 		config.add_view(add_to_cart, route_name='add_to_cart')
+
+		# request user_id route
+		config.add_route('request_user_id', '/request_user_id/')
+		config.add_view(request_user_id, route_name='request_user_id', renderer='json')
 
 		# For our static assets!
 		config.add_static_view(name='/', path='./public', cache_max_age=3600)
