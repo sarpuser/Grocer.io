@@ -46,7 +46,7 @@ def create_user(req):
 
 	# Get user id to create cart table
 	query = "SELECT user_id FROM user_data WHERE email = %s"
-	cursor.execute(query, email)
+	cursor.execute(query, (email))
 	user_id = cursor.fetchone()[0]
 
 	# Create cart table name and add to user entry
@@ -64,7 +64,7 @@ def create_user(req):
 			updated TIMESTAMP
 		)
 	"""
-	cursor.execute(query, cart_table_name)
+	cursor.execute(query, (cart_table_name))
 	db.commit()
 	db.close()
 
@@ -80,7 +80,7 @@ def user_home_page(req):
 	cursor = db.cursor()
 
 	query = "SELECT first_name, last_name, email, address, city, state, zipcode, order_day, order_method FROM user_data WHERE email=%s"
-	cursor.execute(query, email)
+	cursor.execute(query, (email))
 	record = cursor.fetchone()
 
 	if (record[8] == 1):
