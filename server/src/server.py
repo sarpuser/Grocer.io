@@ -25,7 +25,7 @@ def new_user_page(req):
 def create_user(req):
 	# Get user information
 	first_name = req.matchdict['fname']
-	last_name = req.matchdict['name']
+	last_name = req.matchdict['lname']
 	email = req.matchdict['email']
 	address = req.matchdict['address']
 	city = req.matchdict['city']
