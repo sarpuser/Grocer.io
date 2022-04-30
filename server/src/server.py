@@ -50,7 +50,7 @@ def create_user(req):
 	user_id = cursor.fetchone()[0]
 
 	# Create cart table name and add to user entry
-	cart_table_name = "user_" + user_id + "_cart"
+	cart_table_name = "user_" + str(user_id) + "_cart"
 	query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
 	cursor.execute(query, (cart_table_name, user_id))
 	db.commit()
@@ -127,15 +127,15 @@ def get_cart(req):
 
 	# Get user id to get cart table
 	query = "SELECT user_id, first_name FROM user_data WHERE email = %s"
-	cursor.execute(query, email)
+	cursor.execute(query, [email])
 	user_info = cursor.fetchone()[0]
 	user_id = user_info[0]
 	first_name = user_info[1]
 
-	cart_table_name = "user_" + user_id + "_cart"
+	cart_table_name = "user_" + str(user_id) + "_cart"
 
 	query = "SELECT barcode, item_name, quantity FROM %s"
-	cursor.execute(query, cart_table_name)
+	cursor.execute(query, [cart_table_name])
 	cart_items = cursor.fetchall()
 	response = {'cart_items': cart_items, 'fname': first_name}
 
@@ -152,12 +152,12 @@ def add_to_cart(req):
 
 	# Get user id to get cart table
 	query = "SELECT user_id FROM user_data WHERE email = %s"
-	cursor.execute(query, email)
+	cursor.execute(query, [email])
 	user_id = cursor.fetchone()[0]
-	cart_table_name = "user_" + user_id + "_cart"
+	cart_table_name = "user_" + str(user_id) + "_cart"
 
 	query = "SELECT quantity FROM %s"
-	if (cursor.execute(query, cart_table_name) > 0):
+	if (cursor.execute(query, [cart_table_name]) > 0):
 		quantity  = cursor.fetchone()[0] + 1
 		query = "UPDATE %s SET quantity=%d WHERE barcode=%s"
 		values = (cart_table_name, quantity, barcode)
