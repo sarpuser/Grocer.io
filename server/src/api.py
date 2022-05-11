@@ -123,6 +123,27 @@ class InstaCart:
         print(data.decode("utf-8"))
         
         return data
+
+    def findStoresPickup(postalCode):
+        conn = http.client.HTTPSConnection("connect.instacart.com")
+        
+        payload = "{\n  \"find_by\": {\n    \"postal_code\": \"" + postalCode + "\"\n  }\n}"
+        #Might need this later: #\n    \"address_line_1\": \"" + addressLine1 + "\",
+
+        headers = {
+            'Accept': "application/json",
+            'Content-Type': "application/json",
+            'Authorization': "Bearer <token>"
+            }
+
+        conn.request("POST", "/v2/fulfillment/stores/delivery", payload, headers)
+
+        res = conn.getresponse()
+        data = res.read()
+
+        print(data.decode("utf-8"))
+        
+        return data
     
 # Mock Door Dash Order for Primos to 
 DDObj = DoorDash("7770 Regents Rd #109 San Diego, CA 92122", "+18586380003", "3425 Lebon Dr San Diego, CA 92122", "+19515673759") 
