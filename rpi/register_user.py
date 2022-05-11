@@ -24,7 +24,10 @@ def request_user_id():
 
         #Save user_id for later use
         if os.path.exists(user_id_file_path):
-            os.remove(user_id_file_path)
+            try:
+                os.remove(user_id_file_path)
+            except:
+                pass
 
         f = open(user_id_file_path, "w")
         f.write("USER_ID: " + USER_ID)
