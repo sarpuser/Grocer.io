@@ -104,10 +104,25 @@ class InstaCart:
         
         return data
     
+    # \"line_num\": \"string\",\n      \"count\": 1,\n      \"weight\": 1,\n      \"special_instructions\": \"string\",\n      \"replacement_policy\": \"no_replacements\",\n      \"replacement_items\": [\n        {\n          \"upc\": \"string\"\n        }\n      ],\n      \"item\": {\n        \"upc\": \"string\"\n      }\n    }\n
+    def itemsArrayToString(items):
+        itemS = "\"items\": [\n"
+        for i in range (0,len(items)-1):
+            itemS = itemS + "   {\n   \"line_num\": \"{items[i].lineNum}\",\n      "
+            itemS = itemS + "\"count\": \"{items[i].count}\",\n      "
+            itemS = itemS + "\"item\": {\n        \"upc\": \"{items[i].upc}\"\n      }\n    }"
+            if(i<len(items)-1):
+                itemS = itemS + ",\n"
+            else:
+                itemS = itemS + "\n"
+        itemS = itemS + "]"
+        return itemS
+            
     def makeOrder(user_id, orderID, serviceOptionHoldID, initTipCents, address, items):
         conn = http.client.HTTPSConnection("connect.instacart.com")
-
-        payload = "{\n  \"order_id\": \"{orderID}\",\n  \"service_option_hold_id\": {serviceOptionHoldID},\n  \"initial_tip_cents\": {initTipCents},\n   \"birthday\": \"string\",\n  },\n  \"address\": {\n    \"address_line_1\": \"{address[0]}\",\n   \"postal_code\": \"{address[1]}\"\n  },\n  \"items\": [\n    {\n      \"line_num\": \"string\",\n      \"count\": 1,\n      \"weight\": 1,\n      \"special_instructions\": \"string\",\n      \"replacement_policy\": \"no_replacements\",\n      \"replacement_items\": [\n        {\n          \"upc\": \"string\"\n        }\n      ],\n      \"item\": {\n        \"upc\": \"string\"\n      }\n    }\n  ]\n}"
+        itemString = self.itemsArrayToString(items)
+        
+        payload = "{\n  \"order_id\": \"{orderID}\",\n  \"service_option_hold_id\": {serviceOptionHoldID},\n  \"initial_tip_cents\": {initTipCents},\n   \"birthday\": \"string\",\n  },\n  \"address\": {\n    \"address_line_1\": \"{address[0]}\",\n   \"postal_code\": \"{address[1]}\"\n  },\n  {itemString}\n}"
 
         headers = {
             'Accept': "application/json",
@@ -145,11 +160,3 @@ class InstaCart:
         
         return data
     
-# Mock Door Dash Order for Primos to 
-DDObj = DoorDash("7770 Regents Rd #109 San Diego, CA 92122", "+18586380003", "3425 Lebon Dr San Diego, CA 92122", "+19515673759") 
-
-status_code, text, reason = DDObj.createDelivery()
-
-print(status_code)
-print(text)
-print(reason)
