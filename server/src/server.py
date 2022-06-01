@@ -1,5 +1,3 @@
-from turtle import st
-from urllib import response
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
@@ -37,6 +35,12 @@ def create_user(req):
 	# Connect to the database
 	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
 	cursor = db.cursor()
+
+	query = "SELECT * FROM user_data WHERE email=%s"
+	cursor.execute(query, [email])
+	record = cursor.fetchone()
+	if (len(record) != 0):
+		return {'create_user_success': 0, 'email': ''}
 
 	try:
 		# Create user entry
@@ -82,7 +86,7 @@ def user_home_page(req):
 
 	query = "SELECT first_name, last_name, email, address, city, state, zipcode, order_day, order_method FROM user_data WHERE email=%s"
 	cursor.execute(query, [email])
-	record = cursor.fetchone()
+	record = cursor.fetchone()		
 
 	if (record[8] == 1):
 		order_method = "Delivery"
@@ -113,8 +117,8 @@ def user_home_page(req):
 		'city': record[4],
 		'state': record[5],
 		'zipcode': record[6],
-		'order_day': record[7],
-		'order_method': record[8],
+		'order_day': order_day,
+		'order_method': order_method,
 	}
 
 	return render_to_response('./templates/user_home.html', user_data, request=req)
