@@ -17,9 +17,12 @@ function create_account() {
 			if (response['create_user_success'] == 1) {
 				window.open('/user/' + response['email'], '_self');
 			}
+			else if (response['create_user_success'] == -1){
+				console.log('User with email already exists');
+			}
 			else {
-				console.log('User creation failed');
-			};
+				console.log('User creation failed')
+			}
 		});
 }
 

@@ -40,7 +40,7 @@ def create_user(req):
 	cursor.execute(query, [email])
 	record = cursor.fetchone()
 	if (record is not None):
-		return {'create_user_success': 0, 'email': ''}
+		return {'create_user_success': -1, 'email': ''}
 
 	try:
 		# Create user entry
