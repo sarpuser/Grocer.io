@@ -108,7 +108,7 @@ def user_home_page(req):
 	elif (record[7] == 6):
 		order_day = "Sunday"
 
-	# Create JSON for passing to the jinja templatin engine
+	# Create JSON for passing to the jinja templating engine
 	user_data = {
 		'fname': record[0],
 		'lname': record[1],
