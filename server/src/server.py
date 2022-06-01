@@ -38,37 +38,38 @@ def create_user(req):
 	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
 	cursor = db.cursor()
 
-	# Create user entry
-	query = "INSERT INTO user_data (first_name, last_name, email, address, city, state, zipcode, order_day, order_method) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-	values = (first_name, last_name, email, address, city, state, zipcode, order_day, order_method)
-	cursor.execute(query, values)
-	db.commit()
+	try:
+		# Create user entry
+		query = "INSERT INTO user_data (first_name, last_name, email, address, city, state, zipcode, order_day, order_method) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+		values = (first_name, last_name, email, address, city, state, zipcode, order_day, order_method)
+		cursor.execute(query, values)
+		db.commit()
+	except:
+		return {'create_user_success': 0, 'email': ''}
 
 	# Get user id to create cart table
 	query = "SELECT user_id FROM user_data WHERE email = %s"
 	cursor.execute(query, [email])
 	user_id = cursor.fetchone()[0]
 
-	# Create cart table name and add to user entry
-	cart_table_name = "user_" + str(user_id) + "_cart"
-	query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
-	cursor.execute(query, (cart_table_name, user_id))
-	db.commit()
+	# # Create cart table name and add to user entry
+	# cart_table_name = "user_" + str(user_id) + "_cart"
+	# query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
+	# cursor.execute(query, (cart_table_name, user_id))
+	# db.commit()
 
-	# Create the user's cart. All user carts will be called user_{user_id}_cart
-	query = """
-		CREATE TABLE IF NOT EXISTS %s (
-			barcode INT PRIMARY KEY,
-			item_name VARCHAR(100),
-			quantity INT,
-			updated TIMESTAMP
-		)
-	"""
-	cursor.execute(query, [cart_table_name])
-	db.commit()
-	db.close()
-
-	
+	# # Create the user's cart. All user carts will be called user_{user_id}_cart
+	# query = """
+	# 	CREATE TABLE IF NOT EXISTS %s (
+	# 		barcode INT PRIMARY KEY,
+	# 		item_name VARCHAR(100),
+	# 		quantity INT,
+	# 		updated TIMESTAMP
+	# 	)
+	# """
+	# cursor.execute(query, [cart_table_name])
+	# db.commit()
+	# db.close()
 
 	return {'create_user_success': 1, 'email': email}
 
@@ -152,7 +153,7 @@ def add_to_cart(req):
 
 	# Get user id to get cart table
 	query = "SELECT user_id FROM user_data WHERE email = %s"
-	cursor.execute(query, [email])
+	cursor.execute(query, [ ])
 	user_id = cursor.fetchone()[0]
 	cart_table_name = "user_" + str(user_id) + "_cart"
 

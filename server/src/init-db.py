@@ -11,6 +11,10 @@ db_name = os.environ['MYSQL_DATABASE']
 db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
 cursor = db.cursor()
 
+# FIXME: DO NOT DROP TABLE IN ACTUAL PRODUCTION
+
+cursor.execute('DROP TABLE IF EXISTS user_data;')
+
 # Try to create table. Print error if it doesn't work.
 try:
 	cursor.execute("""

@@ -16,6 +16,9 @@ function create_account() {
 		.then(function(response){
 			if (response['create_user_success'] == 1) {
 				window.open('/user/' + response['email'], '_self');
+			}
+			else {
+				console.log('User creation failed');
 			};
 		});
 }
