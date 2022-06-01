@@ -5,11 +5,23 @@
 		<title>Grocer.io</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="/simple.css">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 	</head>
 	<body>
+
+		<nav class="navbar sticky-top navbar-light bg-light">
+			<a class="navbar-brand" href="#">Grocer.io</a>
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+				  <a class="nav-item nav-link active" href="#">Login <span class="sr-only">(current)</span></a>
+				  <!-- <a class="nav-item nav-link" href="#">Features</a>
+				  <a class="nav-item nav-link" href="#">Pricing</a>
+				  <a class="nav-item nav-link disabled" href="#">Disabled</a> -->
+				</div>
+			  </div>
+		</nav>
 		<h1 class="h1">Grocer.io</h1>
-		<table>
+		<table class="table-light table-striped table-hover table-borderless">
 			<tr>
 				<td><strong>First Name</strong></td>
 				<td id="fname">{{fname}}</td>

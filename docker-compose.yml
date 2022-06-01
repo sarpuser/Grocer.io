@@ -19,7 +19,7 @@ services:
       context: ./server
     ports:
       - 80:80
-    # command: python server.py # automatically start the server when the container starts
+    #command: python server.py # automatically start the server when the container starts
     command: tail -f /dev/null # just keep it running for manual web serving
     env_file:
       ./credentials.env
