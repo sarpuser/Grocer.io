@@ -225,6 +225,8 @@ def get_pairing_status(req):
 	cursor.execute(query, [IP])
 	record = cursor.fetchall()
 
+	print (record)
+
 	if (record is None):
 		return {'pairing_status': 1}
 	else:
