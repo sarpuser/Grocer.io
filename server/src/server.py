@@ -1,4 +1,5 @@
 from wsgiref.simple_server import make_server
+from numpy import record
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
 from pyramid.response import FileResponse
@@ -189,7 +190,7 @@ def request_user_id(req):
 	user_id = cursor.fetchone()[0]
 
 	#now delete the the IP from pairing_requests now that we have paired
-	query = "DELETE user_id, IP FROM pairing_requests WHERE IP = %s"
+	query = "DELETE FROM pairing_requests WHERE IP = %s"
 	cursor.execute(query, [IP])
 
 	return {"user_id" : user_id}
@@ -208,6 +209,24 @@ def pair(req):
 
 	query = 'INSERT INTO pairing_requests (user_id, IP) VALUES (%s, %s)'
 	cursor.execute(query, [user_id, IP])
+
+	return {}
+
+def get_pairing_status(req):
+	IP = req.remote_addr
+
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
+
+	query = 'SELECT * FROM pairing_requests WHERE IP=%s'
+	cursor.execute(query, [IP])
+	record = cursor.fetchall()
+
+	if (record is None):
+		return {'pairing_status': 1}
+	else:
+		return {'pairing_status': 0}
 
 def check_user(req):
 	email = req.matchdict['email']
@@ -267,7 +286,11 @@ if __name__ == '__main__':
 
 		# pairing request route
 		config.add_route('pairing', '/pair/{email}')
-		config.add_view(pair, route_name='pairing')
+		config.add_view(pair, route_name='pairing', renderer='json')
+
+		# pairing status route
+		config.add_route('pairing_status', '/get_pairing_status')
+		config.add_view(get_pairing_status, route_name='pairing_status', renderer='json')
 
 		# For our static assets!
 		config.add_static_view(name='/', path='./public', cache_max_age=3600)
