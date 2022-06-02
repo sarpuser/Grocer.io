@@ -32,4 +32,18 @@ try:
 except RuntimeError as err:
 	print("runtime error: {0}".format(err))
 
+# Try to create table. Print error if it doesn't work.
+try:
+	cursor.execute("""
+		CREATE TABLE IF NOT EXISTS user_data (
+			request_id integer AUTO_INCREMENT PRIMARY KEY,
+			user_id integer,
+			IP VARCHAR(30),s
+			created_at		TIMESTAMP
+		);
+	""")
+	print ('Created Table user_data')
+except RuntimeError as err:
+	print("runtime error: {0}".format(err))
+
 db.commit()

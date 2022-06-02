@@ -186,14 +186,17 @@ def request_user_id(req):
 
 	# return the user_id that matches the IP from the rpi
 	query = "SELECT user_id FROM pairing_requests WHERE IP = %s"
-	cursor.execute(query, IP)
+	cursor.execute(query, [IP])
 	user_id = cursor.fetchone()[0]
 
 	#now delete the the IP from pairing_requests now that we have paired
 	query = "DELETE user_id, IP FROM pairing_requests WHERE IP = %s"
-	cursor.execute(query, IP)
+	cursor.execute(query, [IP])
 
 	return {"user_id" : user_id}
+
+def pair(req):
+	
 
 def check_user(req):
 	email = req.matchdict['email']
@@ -247,9 +250,13 @@ if __name__ == '__main__':
 		config.add_route('request_user_id', '/request_user_id/')
 		config.add_view(request_user_id, route_name='request_user_id', renderer='json')
 
-		# request user_id route
+		# find user for login route
 		config.add_route('check_user', '/find/{email}')
 		config.add_view(check_user, route_name='check_user', renderer='json')
+
+		# pairing request route
+		config.add_route('pairing', '/pair/{email}')
+		config.add_view(pair, route_name='pairing')
 
 		# For our static assets!
 		config.add_static_view(name='/', path='./public', cache_max_age=3600)
