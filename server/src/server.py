@@ -1,5 +1,4 @@
 from wsgiref.simple_server import make_server
-from numpy import record
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
 from pyramid.response import FileResponse
