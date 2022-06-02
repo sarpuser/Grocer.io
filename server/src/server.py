@@ -196,7 +196,19 @@ def request_user_id(req):
 	return {"user_id" : user_id}
 
 def pair(req):
-	
+	email = req.matchdict['email']
+	IP = req.remote_addr
+
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
+
+	query = 'SELECT user_id FROM user_data WHERE email=%s'
+	cursor.execute(query, [email])
+	user_id = cursor.fetchone()[0]
+
+	query = 'INSERT INTO pairing_requests (user_id, IP) VALUES (%s, %s)'
+	cursor.execute(query, [user_id, IP])
 
 def check_user(req):
 	email = req.matchdict['email']
