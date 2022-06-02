@@ -178,6 +178,7 @@ def add_to_cart(req):
 
 def request_user_id(req):
 	IP = req.remote_addr
+	print (IP)
 
 	# Connect to the DB
 	db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
