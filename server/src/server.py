@@ -209,6 +209,7 @@ def pair(req):
 
 	query = 'INSERT INTO pairing_requests (user_id, IP) VALUES (%s, %s)'
 	cursor.execute(query, [user_id, IP])
+	db.commit()
 
 	return {}
 
