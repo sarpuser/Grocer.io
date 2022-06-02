@@ -42,7 +42,7 @@ try:
 			created_at		TIMESTAMP
 		);
 	""")
-	print ('Created Table user_data')
+	print ('Created Table pairing_requests')
 except RuntimeError as err:
 	print("runtime error: {0}".format(err))
 
