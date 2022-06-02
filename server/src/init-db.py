@@ -38,7 +38,7 @@ try:
 		CREATE TABLE IF NOT EXISTS pairing_requests (
 			request_id integer AUTO_INCREMENT PRIMARY KEY,
 			user_id integer,
-			IP VARCHAR(30),s
+			IP VARCHAR(30),
 			created_at		TIMESTAMP
 		);
 	""")

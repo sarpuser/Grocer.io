@@ -57,3 +57,25 @@ function login_button() {
 			};
 	});
 }
+
+async function pair_button() {
+	let email = document.getElementById('email').value;
+	let url = '/pair/' + email;
+
+	document.getElementById('pairing_status').innerHTML = 'Pairing process started. Please press the button on the hardware to complete the pairing.'
+
+	await fetch(url);
+
+	url = '/get_pairing_status'
+
+	let interval = setInterval(function() {
+		fetch(url)
+			.then(response=>response.json())
+			.then(function(response){
+				if (response['pairing_status'] == 1) {
+					document.getElementById('Pairing complete. You can now start using the barcode scanner!');
+					clearInterval(interval);
+				}
+		});
+	}, 1000);
+}
