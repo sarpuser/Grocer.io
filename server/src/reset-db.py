@@ -7,32 +7,14 @@ db_user = os.environ['MYSQL_USER']
 db_pass = os.environ['MYSQL_PASSWORD']
 db_name = os.environ['MYSQL_DATABASE']
 
-db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
+db = mysql.connect(user=db_user, password=db_pass, host=db_host)
 cursor = db.cursor()
-
-# FIXME: DO NOT DROP TABLE IN ACTUAL PRODUCTION
-
-cursor.execute('DROP TABLE IF EXISTS user_data;')
 
 # Try to create table. Print error if it doesn't work.
 try:
-	cursor.execute("""
-		CREATE TABLE IF NOT EXISTS user_data (
-			user_id          	integer  AUTO_INCREMENT PRIMARY KEY,
-			first_name  	VARCHAR(50),
-			last_name		VARCHAR(50),
-			email			VARCHAR(50),
-			address 		VARCHAR(50),
-			city			VARCHAR(50),
-			state			VARCHAR(2),
-			zipcode			VARCHAR(10),
-			order_day		INT,
-			order_method	INT,
-			cart_table		VARCHAR(50),
-			created_at		TIMESTAMP
-		);
-	""")
-	print ('Created Table user_data')
+	cursor.execute('DROP DATABASE IF EXISTS GrocerIO;')
+	cursor.execute('CREATE DATABASE GrocerIO;')
+	print ('Re-created blank database GrocerIO')
 except RuntimeError as err:
 	print("runtime error: {0}".format(err))
 

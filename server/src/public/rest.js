@@ -19,9 +19,11 @@ function create_account() {
 			}
 			else if (response['create_user_success'] == -1){
 				console.log('User with email already exists');
+				document.getElementById('error').innerHTML = 'A user with that email already exists!';
 			}
 			else {
-				console.log('User creation failed')
+				console.log('User creation failed');
+				document.getElementById('error').innerHTML = 'Could not create user. Please try again.';
 			}
 		});
 }
@@ -42,6 +44,16 @@ function new_user() {
 
 function login_button() {
 	let email = document.getElementById('email').value;
-	let url = '/user/' + email;
-	window.open(url, '_self');
+	let url = '/find/' + email;
+	
+	fetch(url)
+		.then(response=>response.json())
+		.then(function(response){
+			if (response['user_found'] == 1) {
+				window.open('/user/' + email, '_self');
+			}
+			else {
+				document.getElementById('error').innerHTML = 'A user with that email could not be found. Please create an account.';
+			};
+	});
 }

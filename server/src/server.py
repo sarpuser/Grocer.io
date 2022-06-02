@@ -1,4 +1,5 @@
 from wsgiref.simple_server import make_server
+from numpy import record
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
 from pyramid.response import FileResponse
@@ -59,7 +60,7 @@ def create_user(req):
 	# # Create cart table name and add to user entry
 	# cart_table_name = "user_" + str(user_id) + "_cart"
 	# query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
-	# cursor.execute(query, (cart_table_name, user_id))
+	# cursor.execute(query, [cart_table_name, user_id])
 	# db.commit()
 
 	# # Create the user's cart. All user carts will be called user_{user_id}_cart
@@ -194,6 +195,21 @@ def request_user_id(req):
 
 	return {"user_id" : user_id}
 
+def check_user(req):
+	email = req.matchdict['email']
+
+	# Connect to the database
+	db = mysql.connect(host=db_host, user=db_user, password=db_pass, database=db_name)
+	cursor = db.cursor()
+
+	query = 'SELECT * FROM user_data WHERE email=%s'
+	cursor.execute(query, [email])
+	record = cursor.fetchone()
+
+	if (record is None):
+		return {'user_found': 0}
+	else: 
+		return {'user_found': 1}
 
 ''' Route Configurations '''
 if __name__ == '__main__':
@@ -230,6 +246,10 @@ if __name__ == '__main__':
 		# request user_id route
 		config.add_route('request_user_id', '/request_user_id/')
 		config.add_view(request_user_id, route_name='request_user_id', renderer='json')
+
+		# request user_id route
+		config.add_route('check_user', '/find/{email}')
+		config.add_view(check_user, route_name='check_user', renderer='json')
 
 		# For our static assets!
 		config.add_static_view(name='/', path='./public', cache_max_age=3600)
