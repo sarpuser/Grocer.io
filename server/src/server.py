@@ -192,6 +192,7 @@ def request_user_id(req):
 	#now delete the the IP from pairing_requests now that we have paired
 	query = "DELETE FROM pairing_requests WHERE IP = %s"
 	cursor.execute(query, [IP])
+	db.commit()
 
 	return {"user_id" : user_id}
 
