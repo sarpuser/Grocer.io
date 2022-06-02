@@ -73,7 +73,7 @@ async function pair_button() {
 			.then(response=>response.json())
 			.then(function(response){
 				if (response['pairing_status'] == 1) {
-					document.getElementById('Pairing complete. You can now start using the barcode scanner!');
+					document.getElementById('pairing_status').innerHTML = 'Pairing complete. You can now start using the barcode scanner!';
 					clearInterval(interval);
 				}
 		});
