@@ -12,7 +12,7 @@ BUTTON_GPIO = 16
 USER_ID = 0
 url = "http://164.92.97.79/request_user_id/"
 
-user_id_file_path = "user_id.txt"
+user_id_file_path = "./user_id.txt"
 
 
 

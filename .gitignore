@@ -1,3 +1,4 @@
 **/*.env
 database/
 **/nohup.out
+**/user_id.txt
