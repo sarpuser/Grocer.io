@@ -223,7 +223,7 @@ def get_pairing_status(req):
 
 	query = 'SELECT * FROM pairing_requests WHERE IP=%s'
 	cursor.execute(query, [IP])
-	record = cursor.fetchall()
+	record = cursor.fetchone()
 
 	print (record)
 
