@@ -59,7 +59,7 @@ function login_button() {
 }
 
 async function pair_button() {
-	let email = document.getElementById('email').value;
+	let email = document.getElementById('email').innerHTML;
 	let url = '/pair/' + email;
 
 	document.getElementById('pairing_status').innerHTML = 'Pairing process started. Please press the button on the hardware to complete the pairing.'
