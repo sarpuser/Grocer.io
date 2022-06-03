@@ -167,7 +167,7 @@ def add_to_cart(req):
 		cursor.execute(query)
 		response = {'added_to_cart': 1}
 	else:
-		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 1)' %(cart_table_name, barcode, item_name)
+		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, \'%s\', 1)' %(cart_table_name, barcode, item_name)
 		cursor.execute(query)
 		response = {'added_to_cart': 0}
 	db.commit()
