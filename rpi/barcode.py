@@ -3,6 +3,8 @@ import requests
 import json
 
 api_key = "" #https://upcdatabase.org/
+user_id_file_path = "user_id.txt"
+url = "http://164.92.97.79/additem/"
 
 def barcode_reader():
     """Barcode code obtained from 'brechmos' 
@@ -20,55 +22,36 @@ def barcode_reader():
     fp = open('/dev/hidraw0', 'rb')
 
     ss = ""
-    shift = False
 
     done = False
 
     while not done:
 
         ## Get the character from the HID
-        buffer = fp.read(8)
+        buffer = fp.read(3)
         for c in buffer:
-            if ord(c) > 0:
+            if(int(c) > 0):
 
-                ##  40 is carriage return which signifies
-                ##  we are done looking for characters
-                if int(ord(c)) == 40:
+                if(int(c) == 40):
                     done = True
-                    break
-
-                ##  If we are shifted then we have to
-                ##  use the hid2 characters.
-                if shift:
-
-                    ## If it is a '2' then it is the shift key
-                    if int(ord(c)) == 2:
-                        shift = True
-
-                    ## if not a 2 then lookup the mapping
-                    else:
-                        ss += hid2[int(ord(c))]
-                        shift = False
-
-                ##  If we are not shifted then use
-                ##  the hid characters
-
                 else:
-
-                    ## If it is a '2' then it is the shift key
-                    if int(ord(c)) == 2:
-                        shift = True
-
-                    ## if not a 2 then lookup the mapping
-                    else:
-                        ss += hid[int(ord(c))]
+                    ss += hid[int(c)]
     return ss
 
 
 #Make restful request to server
 def restful_request(upc_code):
-    params = { 'upc': upc_code}
-    r = requests.get('INSERT IP HERE', params=params) #sends request in form URL/get?key1=data1&key2=data2&...
+    USER_ID = read_USER_ID()
+    r = requests.get(url + str(USER_ID) + "/" + str(upc_code)) #http://164.92.97.79/additem/USER_ID/BARCODE
+
+def read_USER_ID():
+    f = open(user_id_file_path, "r")
+    line = f.readline()
+    split_line = line.split(":")
+    USER_ID = split_line[1].strip()
+    f.close()
+
+    return USER_ID
 
 """
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,12 +77,12 @@ UPC lookup disabled because instacart API requires input UPC code, so all we nee
 #     print(json.dumps(response.json(), indent=2))
 #     print("-----" * 5 + "\n")
 
+
 if __name__ == '__main__':
     try:
         while True:
             barcode = barcode_reader()
-            if barcode is not None:
-                print(barcode)
-            #UPC_lookup(api_key,barcode_reader())
+            print(barcode)
+            restful_request(barcode)
     except KeyboardInterrupt:
         pass
