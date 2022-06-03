@@ -66,7 +66,7 @@ def create_user(req):
 	# Create the user's cart. All user carts will be called user_{user_id}_cart
 	query = """
 		CREATE TABLE IF NOT EXISTS %s (
-			barcode INT PRIMARY KEY,
+			barcode BIGINT PRIMARY KEY,
 			item_name VARCHAR(100),
 			quantity INT,
 			img_src VARCHAR(200),
