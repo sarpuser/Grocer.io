@@ -133,7 +133,7 @@ def get_cart(req):
 	# Get user id to get cart table
 	query = "SELECT user_id, first_name FROM user_data WHERE email = %s"
 	cursor.execute(query, [email])
-	user_info = cursor.fetchone()[0]
+	user_info = cursor.fetchone()
 	user_id = user_info[0]
 	first_name = user_info[1]
 
