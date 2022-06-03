@@ -33,7 +33,7 @@ function log_out() {
 }
 
 function view_cart() {
-	let email = document.getElementById("email").value;
+	let email = document.getElementById("email").innerHTML;
 	url = "/cart/" + email;
 	window.open(url, '_self');
 }
