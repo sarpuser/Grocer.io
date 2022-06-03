@@ -69,7 +69,7 @@ def create_user(req):
 			barcode INT PRIMARY KEY,
 			item_name VARCHAR(100),
 			quantity INT,
-			img_src = VARCHAR(200),
+			img_src VARCHAR(200),
 			updated TIMESTAMP
 		)
 	""" %cart_table_name
