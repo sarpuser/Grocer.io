@@ -1,3 +1,4 @@
 pyramid
 pyramid_jinja2
 mysql-connector-python
+requests
