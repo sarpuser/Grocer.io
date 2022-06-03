@@ -70,8 +70,8 @@ def create_user(req):
 			quantity INT,
 			updated TIMESTAMP
 		)
-	"""
-	cursor.execute(query, [cart_table_name])
+	""" %cart_table_name
+	cursor.execute(query)
 	db.commit()
 	db.close()
 
@@ -139,8 +139,8 @@ def get_cart(req):
 
 	cart_table_name = "user_" + str(user_id) + "_cart"
 
-	query = "SELECT barcode, item_name, quantity FROM %s"
-	cursor.execute(query, [cart_table_name])
+	query = "SELECT barcode, item_name, quantity FROM %s" %cart_table_name
+	cursor.execute(query)
 	cart_items = cursor.fetchall()
 	response = {'cart_items': cart_items, 'fname': first_name}
 
