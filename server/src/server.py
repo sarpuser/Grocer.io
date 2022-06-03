@@ -148,30 +148,27 @@ def get_cart(req):
 
 def add_to_cart(req):
 	barcode = req.matchdict['barcode']
-	email = req.matchdict['email']
+	user_id = req.matchdict['user_id']
 	item_name = "fake" # FIXME: add barcode lookup API
 
 	# Connect to the DB
 	db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
 	cursor = db.cursor()
 
-	# Get user id to get cart table
-	query = "SELECT user_id FROM user_data WHERE email = %s"
-	cursor.execute(query, [email])
-	user_id = cursor.fetchone()[0]
+	# Use user id to get cart table name
 	cart_table_name = "user_" + str(user_id) + "_cart"
 
-	query = "SELECT quantity FROM %s WHERE barcode=%s"
-	cursor.execute(query, [cart_table_name, barcode])
+	query = "SELECT quantity FROM %s WHERE barcode=%s" %(cart_table_name, barcode)
+	cursor.execute(query)
 	record = cursor.fetchone()
 	if (record is not None):
 		quantity = int(record[0]) + 1
-		query = 'UPDATE %s SET quantity=%s WHERE barcode=%s'
-		cursor.execute(query, [cart_table_name, quantity, barcode])
+		query = 'UPDATE %s SET quantity=%s WHERE barcode=%s' %(cart_table_name, quantity, barcode)
+		cursor.execute(query)
 		response = {'added_to_cart': 1}
 	else:
-		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 1)'
-		cursor.execute(query, [cart_table_name, barcode, item_name])
+		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 1)' %(cart_table_name, barcode, item_name)
+		cursor.execute(query)
 		response = {'added_to_cart': 0}
 	db.commit()
 
@@ -276,7 +273,7 @@ if __name__ == '__main__':
 		config.add_view(get_cart, route_name='get_cart')
 
 		# Add to cart route
-		config.add_route('add_to_cart', '/additem/{email}/{barcode}')
+		config.add_route('add_to_cart', '/additem/{user_id}/{barcode}')
 		config.add_view(add_to_cart, route_name='add_to_cart')
 
 		# request user_id route
