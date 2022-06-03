@@ -5,60 +5,6 @@ import requests
 import uuid
 import http.client
 
-
-class DoorDash: # API Class for using DoorDash API
-    
-    def __init__(self, pickupAddress, pickupPhoneNumber, dropoffAddress, dropoffPhoneNumber): # Pass in the REQUIRED parts of request
-        self.pickupAddress = pickupAddress
-        self.pickupPhoneNumber = pickupPhoneNumber
-        self.dropoffAddress = dropoffAddress
-        self.dropoffPhoneNumber = dropoffPhoneNumber
-    
-    access_key = {
-    "developer_id": "9e05e3d3-77fb-4316-9e66-1d7bbae90127",
-    "key_id": "0e1c10c7-b4f1-4da6-80c0-92eec4aec9ad",
-    "signing_secret": "6PzwYTKjYgAam4U98t9RN_U0ZPyuqE1X8EQF-KDaJiY"
-    }
-
-    token = jwt.encode(
-        {   
-            "aud": "doordash",
-            "iss": access_key["developer_id"],
-            "kid": access_key["key_id"],
-            "exp": str(math.floor(time.time() + 60)),
-            "iat": str(math.floor(time.time())), 
-        },
-        jwt.utils.base64url_decode("{signing_secret}"),
-        algorithm="HS256",
-        headers={"dd-ver": "DD-JWT-V1"})
-    
-    def createDelivery():
-        endpoint = "https://openapi.doordash.com/drive/v2/deliveries/"  # DRIVE API V2
-    
-        headers = {"Authorization": "Bearer " + self.token,
-            "Content-Type": "application/json"}
-
-        delivery_id = str(uuid.uuid4()) # Randomly generated UUID4
-
-        request_body = { # Modify pickup and drop off addresses below
-            "external_delivery_id": delivery_id,
-            "pickup_address": self.pickupAddress,
-            # "pickup_business_name": "not given",
-            "pickup_phone_number": self.pickupPhoneNumber,
-           # "pickup_instructions": "Enter gate code 1234 on the callbox.",
-            "dropoff_address": self.dropoffAddress,
-            #"dropoff_business_name": "Wells Fargo SF Downtown",
-            "dropoff_phone_number": self.dropoffPhoneNumber
-            #"dropoff_instructions": "Enter gate code 1234 on the callbox.",
-            #"order_value": 1999
-        }
-        
-        create_delivery = requests.post(endpoint, headers=headers, json=request_body) # Create POST request
-
-        return create_delivery.status_code, create_delivery.text, create_delivery.reason
-    
-    
-    
     
 class InstaCart:
     
