@@ -274,7 +274,7 @@ if __name__ == '__main__':
 
 		# Add to cart route
 		config.add_route('add_to_cart', '/additem/{user_id}/{barcode}')
-		config.add_view(add_to_cart, route_name='add_to_cart')
+		config.add_view(add_to_cart, route_name='add_to_cart', renderer='json')
 
 		# request user_id route
 		config.add_route('request_user_id', '/request_user_id/')
