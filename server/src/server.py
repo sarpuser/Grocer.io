@@ -2,6 +2,7 @@ from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.renderers import render_to_response
 from pyramid.response import FileResponse
+from barcode_lookup import lookup_barcode
 
 import mysql.connector as mysql
 import os
@@ -68,6 +69,7 @@ def create_user(req):
 			barcode INT PRIMARY KEY,
 			item_name VARCHAR(100),
 			quantity INT,
+			img_src = VARCHAR(200),
 			updated TIMESTAMP
 		)
 	""" %cart_table_name
@@ -139,7 +141,7 @@ def get_cart(req):
 
 	cart_table_name = "user_" + str(user_id) + "_cart"
 
-	query = "SELECT barcode, item_name, quantity FROM %s" %cart_table_name
+	query = "SELECT barcode, item_name, quantity, img_src FROM %s" %cart_table_name
 	cursor.execute(query)
 	cart_items = cursor.fetchall()
 	response = {'cart_items': cart_items, 'fname': first_name}
@@ -149,7 +151,7 @@ def get_cart(req):
 def add_to_cart(req):
 	barcode = req.matchdict['barcode']
 	user_id = req.matchdict['user_id']
-	item_name = "fake" # FIXME: add barcode lookup API
+	item_name, img_src = lookup_barcode(barcode)
 
 	# Connect to the DB
 	db = mysql.connect(user=db_user, password=db_pass, host=db_host, database=db_name)
@@ -165,11 +167,11 @@ def add_to_cart(req):
 		quantity = int(record[0]) + 1
 		query = 'UPDATE %s SET quantity=%s WHERE barcode=%s' %(cart_table_name, quantity, barcode)
 		cursor.execute(query)
-		response = {'added_to_cart': 1}
+		response = {'new_entry': 0}
 	else:
-		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, \'%s\', 1)' %(cart_table_name, barcode, item_name)
+		query = 'INSERT INTO %s (barcode, item_name, quantity, img_src) VALUES (%s, \'%s\', 1, \'%s\')' %(cart_table_name, barcode, item_name, img_src)
 		cursor.execute(query)
-		response = {'added_to_cart': 0}
+		response = {'new_entry': 1}
 	db.commit()
 
 	return response
