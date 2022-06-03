@@ -56,24 +56,24 @@ def create_user(req):
 	cursor.execute(query, [email])
 	user_id = cursor.fetchone()[0]
 
-	# # Create cart table name and add to user entry
-	# cart_table_name = "user_" + str(user_id) + "_cart"
-	# query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
-	# cursor.execute(query, [cart_table_name, user_id])
-	# db.commit()
+	# Create cart table name and add to user entry
+	cart_table_name = "user_" + str(user_id) + "_cart"
+	query = "UPDATE user_data SET cart_table = %s WHERE user_id = %s"
+	cursor.execute(query, [cart_table_name, user_id])
+	db.commit()
 
-	# # Create the user's cart. All user carts will be called user_{user_id}_cart
-	# query = """
-	# 	CREATE TABLE IF NOT EXISTS %s (
-	# 		barcode INT PRIMARY KEY,
-	# 		item_name VARCHAR(100),
-	# 		quantity INT,
-	# 		updated TIMESTAMP
-	# 	)
-	# """
-	# cursor.execute(query, [cart_table_name])
-	# db.commit()
-	# db.close()
+	# Create the user's cart. All user carts will be called user_{user_id}_cart
+	query = """
+		CREATE TABLE IF NOT EXISTS %s (
+			barcode INT PRIMARY KEY,
+			item_name VARCHAR(100),
+			quantity INT,
+			updated TIMESTAMP
+		)
+	"""
+	cursor.execute(query, [cart_table_name])
+	db.commit()
+	db.close()
 
 	return {'create_user_success': 1, 'email': email}
 
@@ -157,24 +157,25 @@ def add_to_cart(req):
 
 	# Get user id to get cart table
 	query = "SELECT user_id FROM user_data WHERE email = %s"
-	cursor.execute(query, [ ])
+	cursor.execute(query, [email])
 	user_id = cursor.fetchone()[0]
 	cart_table_name = "user_" + str(user_id) + "_cart"
 
-	query = "SELECT quantity FROM %s"
-	if (cursor.execute(query, [cart_table_name]) > 0):
-		quantity  = cursor.fetchone()[0] + 1
-		query = "UPDATE %s SET quantity=%d WHERE barcode=%s"
-		values = (cart_table_name, quantity, barcode)
-		cursor.execute(query, values)
-
+	query = "SELECT quantity FROM %s WHERE barcode=%s"
+	cursor.execute(query, [cart_table_name, barcode])
+	record = cursor.fetchone()
+	if (record is not None):
+		quantity = int(record[0]) + 1
+		query = 'UPDATE %s SET quantity=%s WHERE barcode=%s'
+		cursor.execute(query, [cart_table_name, quantity, barcode])
+		response = {'added_to_cart': 1}
 	else:
-		query = "INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 0)"
-		values  = (cart_table_name, barcode, item_name)
-		cursor.execute(query, values)
+		query = 'INSERT INTO %s (barcode, item_name, quantity) VALUES (%s, %s, 1)'
+		cursor.execute(query, [cart_table_name, barcode, item_name])
+		response = {'added_to_cart': 0}
 	db.commit()
 
-	return {'added_to_cart': 1}
+	return response
 
 def request_user_id(req):
 	IP = req.remote_addr
