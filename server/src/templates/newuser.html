@@ -7,9 +7,90 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 	</head>
+
+	<nav class="navbar sticky-top navbar-light bg-light">
+		<a class="navbar-brand mx-2" href="#">
+			Grocer.io 
+			<span class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></span>
+		</a>
+		<div class="navbar-nav">
+			<span class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></span>
+			<a class="nav-item nav-link active btn btn-primary px-3 py-2 mx-2 text-light" href="/">
+				Login 
+				<span class="sr-only"></span>
+			</a>
+		</div>	
+	</nav>
+
 	<body>
 		<h1 class="h1">Grocer.io</h1>
 		<form>
+
+			<div class="form-row">
+				<div class="form-group col-md-4">
+				  <label for="fname">First Name</label>
+				  <input type="email" class="form-control" id="fname" placeholder="First Name">
+				</div>
+				<div class="form-group col-md-4">
+				  <label for="lname">Last Name</label>
+				  <input type="email" class="form-control" id="lname" placeholder="Last Name">
+				</div>
+				<div class="form-group col-md-4">
+					<label for="email">Email</label>
+					<input type="email" class="form-control" id="email" placeholder="Email">
+				</div>
+			</div>
+
+
+			<div class="form-group">
+			<label for="address">Address</label>
+			<input type="text" class="form-control" id="address" placeholder="1234 Main St">
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+				  <label for="city">City</label>
+				  <input type="text" class="form-control" id="city">
+				</div>
+				<div class="form-group col-md-4">
+				  <label for="state">State</label>
+				  <select id="state" class="form-control">
+					<option selected>Choose...</option>
+					<option value="CA">CA</option>
+					<option value="NY">NY</option>
+					<option value="TX">TX</option>
+					<option value="NJ">NJ</option>
+					<option value="IL">IL</option>
+				  </select>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="zipcode">Zip Code</label>
+					<input type="email" class="form-control" id="zipcode" placeholder="90210">
+				</div>
+			</div>
+
+
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="order_day">Order Day</label>
+					<select id="order_day" class="form-control">
+						<option value="0">Monday</option>
+						<option value="1">Tuesday</option>
+						<option value="2">Wednesday</option>
+						<option value="3">Thursday</option>
+						<option value="4">Friday</option>
+						<option value="5">Saturday</option>
+						<option value="6">Sunday</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-6">
+					<label for="order_method">Order Day</label>
+					<select id="order_method" class="form-control">
+						<option value="1">Delivery</option>
+						<option value="2">Pickup</option>
+					</select>
+				</div>
+			</div>
 			<label for="fname">First Name </label>
 			<input type="text" id="fname"> <br>
 			<label for="lname">Last Name </label>
@@ -45,7 +126,7 @@
 				<option value="1">Delivery</option>
 				<option value="2">Pickup</option>
 			</select> <br>
-			<button type="button" onclick="create_account()">Create Account</button>
+			<button type="button" class='btn btn-primary' onclick="create_account()">Create Account</button>
 		</form>
 		<p class="text-error" id="error"></p>
 		<script type="text/javascript" src="/rest.js"></script>
