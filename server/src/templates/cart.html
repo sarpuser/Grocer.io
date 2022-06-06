@@ -22,7 +22,25 @@
 							  <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
 							</div>
 							<hr class="my-4">
-		  
+							
+							<div class="row mb-4 d-flex justify-content-between align-items-center"> <!-- Begin Section that needs to be templated-->
+								<div class="col-md-6 col-lg-6 col-xl-6">
+								  <h3> Image </h3>
+								</div>
+								<div class="col-md-3 col-lg-3 col-xl-3">
+									<h3> Name </h3>
+								</div>
+  
+								<div class="col-md-3 col-lg-3 col-xl-3">
+									<h3> Barcode </h3>
+								</div>
+  
+								<div class="col-md-3 col-lg-3 col-xl-3">
+									<h3> Quantity </h3>
+								</div>
+  
+							  </div>
+
 							{% for item in cart_items %}
 							<div class="row mb-4 d-flex justify-content-between align-items-center"> <!-- Begin Section that needs to be templated-->
 							  <div class="col-md-6 col-lg-6 col-xl-6">
