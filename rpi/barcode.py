@@ -5,6 +5,8 @@ import json
 api_key = "" #https://upcdatabase.org/
 user_id_file_path = "user_id.txt"
 url = "http://164.92.97.79/additem/"
+request_user_url = "http://164.92.97.79/request_user_id/"
+request_user_barcode = "12345678987"
 
 def barcode_reader():
     """Barcode code obtained from 'brechmos' 
@@ -77,12 +79,35 @@ UPC lookup disabled because instacart API requires input UPC code, so all we nee
 #     print(json.dumps(response.json(), indent=2))
 #     print("-----" * 5 + "\n")
 
+def request_user_id():
+    try:
+        r = requests.get(request_user_id, timeout=1) #wait for response for 1 second before timing out
+        r = r.json()
+        USER_ID = r["user_id"] #need to test if this works, or if I need matchdict or something
+
+        #Save user_id for later use
+        if os.path.exists(user_id_file_path):
+            try:
+                os.remove(user_id_file_path)
+            except:
+                pass
+
+        f = open(user_id_file_path, "w")
+        f.write("USER_ID: " + str(USER_ID))
+        f.close()
+        
+
+    except requests.exceptions.Timeout:
+        print("ERROR: request_user_id restful request timed out (No match ?)")
+
 
 if __name__ == '__main__':
     try:
         while True:
             barcode = barcode_reader()
-            print(barcode)
-            restful_request(barcode)
+            if(barcode == request_user_barcode):
+                request_user_id()
+            else:
+                restful_request(barcode)
     except KeyboardInterrupt:
         pass
