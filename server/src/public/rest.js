@@ -5,7 +5,7 @@ function create_account() {
 	let address = document.getElementById("address").value;
 	let city = document.getElementById("city").value;
 	let state = document.getElementById("state").value;
-	let zipcode = document.getElementById("zipcode").value;	
+	let zipcode = document.getElementById("zipcode").value;
 	let order_day = document.getElementById("order_day").value;
 	let order_method = document.getElementById("order_method").value;
 
@@ -45,7 +45,7 @@ function new_user() {
 function login_button() {
 	let email = document.getElementById('email').value;
 	let url = '/find/' + email;
-	
+
 	fetch(url)
 		.then(response=>response.json())
 		.then(function(response){
@@ -62,7 +62,7 @@ async function pair_button() {
 	let email = document.getElementById('email').innerHTML;
 	let url = '/pair/' + email;
 
-	document.getElementById('pairing_status').innerHTML = 'Pairing process started. Please press the button on the hardware to complete the pairing.'
+	document.getElementById('pairing_status').innerHTML = 'Pairing process started. Please scan the barcode on the inside of the lid.'
 
 	await fetch(url);
 
