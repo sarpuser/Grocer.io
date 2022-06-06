@@ -8,16 +8,8 @@
 		<link rel="stylesheet" type="text/css" href="/simple.css">
 	</head>
 	<body>
-		<div class="row">
-			<div class="col-md-6">
-				test
-			</div>
-			<div class="col-md-6">
-				test2
-			</div>
-		</div>
-		
-		<section class="h-100 h-custom">
+
+		<!-- <section class="h-100 h-custom">
 			<div class="container py-5 h-100">
 			  <div class="row d-flex justify-content-center align-items-center h-100">
 				<div class="col-12">
@@ -90,9 +82,23 @@
 				</div>
 			  </div>
 			</div>
-		  </section>
+		  </section> -->
+
+		<nav class="navbar sticky-top navbar-light bg-light">
+			<a class="navbar-brand mx-2" href="#">
+				Grocer.io 
+				<span class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></span>
+			</a>
+			<div class="navbar-nav">
+				<span class='glyphicon glyphicon-shopping-cart' aria-hidden='true'></span>
+				<a class="nav-item nav-link active btn btn-primary px-3 py-2 mx-2 text-light" href="/">
+					Sign Out 
+					<span class="sr-only"></span>
+				</a>
+			</div>	
+		</nav>
 		
-		<!-- <h1 class="h1">Grocer.io</h1>
+		<h1 class="h1">Grocer.io</h1>
 		<h2>{{fname}}'s Cart</h2>
 		<button onclick="log_out()">Log Out</button> <br>
 		<table>
@@ -110,7 +116,7 @@
 				<td>{{item[2]}}</td>
 			</tr>
 			{% endfor %}
-		</table> -->
+		</table>
 		<script type="text/javascript" src="/rest.js"></script>
 	</body>
 </html>
